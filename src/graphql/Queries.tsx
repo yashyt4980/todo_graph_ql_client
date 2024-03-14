@@ -7,3 +7,21 @@ export const ADD_TODO = gql`
         }
       }
 `;
+
+export const UPDATE_TODO = gql`
+      mutation UpdateTodo($task: String!, $deadline: String!, $id: ID!) {
+        updateTask(task: $task, deadline: $deadline, _id: $id) {
+          task
+          deadline
+        }
+      }
+`;
+export const FETCH_TODO = gql`
+      query fetchTodos {
+        getTasks {
+          task
+          deadline
+          _id
+        }
+      }
+`
