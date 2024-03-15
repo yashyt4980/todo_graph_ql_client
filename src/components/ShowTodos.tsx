@@ -13,6 +13,7 @@ interface Data {
 }
 
 const ShowTodos = () => {
+  const [ renderUpdate, setRenderUpdate ] = useState(false);
   const { data } = useQuery<Data>(FETCH_TODO);
   const [ deleteTask, { data: deletedTask }] = useMutation<Task>(DELETE_TODO);
   if(deletedTask) location.reload();
@@ -26,6 +27,9 @@ const ShowTodos = () => {
     // console.log(tasks);
   }, [tasks])
 
+  const updateT = async() => {
+    setRenderUpdate(!renderUpdate);
+  }
   const deleteT = async(_id:String | ObjectId) => {
     await deleteTask({variables: {id:_id}});
   }
@@ -43,8 +47,11 @@ const ShowTodos = () => {
             <h3 className="text-black">Dealine:</h3>
             <span className="text-cyan-600">{task.deadline}</span>
             </div>
+            {
+              renderUpdate && <HandleTodo task_={task.task} deadLine_ = {task.deadline} _id = {task._id} update = {true}></HandleTodo>
+            }
             <button className = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded" onClick={(e) => { deleteT(task._id) }}>Delete</button>
-            {/* <button className = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={(e) => { updateT(task._id, task.deadline, task.task) }}>Update</button> */}
+            <button className = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={ updateT }>Update</button>
           </div>
         )
       })  

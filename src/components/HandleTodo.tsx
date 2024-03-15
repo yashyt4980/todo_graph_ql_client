@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { ADD_TODO, UPDATE_TODO } from "../graphql/Queries";
 import { ObjectId } from "mongodb";
+
 const HandleTodo = ({task_, deadLine_, update, _id} : { task_: string, deadLine_: string, update: boolean, _id?: string | ObjectId }) => {
   const [addTask, { data: addedTask }] = useMutation(ADD_TODO);
   const [updateTask, { data: updatedTask }] = useMutation(UPDATE_TODO);
-  console.log(`HandleTodo.tsx -> ${addedTask} ${updatedTask}`);
+  if(addedTask) location.reload();
+  if(updatedTask) location.reload();
   const [ todo, setTodo ] = useState({
     task: task_,
     deadLine: deadLine_
@@ -19,14 +21,13 @@ const HandleTodo = ({task_, deadLine_, update, _id} : { task_: string, deadLine_
 
   const add = async () => {
     if(todo.task !== "" && todo.deadLine !== "") {
-      const addedTask = await addTask({ variables: { task: todo.task, deadline: todo.deadLine } });
-      if(addedTask) alert(" Task added successfully, refresh page!");
+      await addTask({ variables: { task: todo.task, deadline: todo.deadLine } });
     }
     else alert(" Enter all details ");
   };
 
   const updateTodo = async() => {
-    await updateTask({variables: {task: todo.task, deadline: todo.deadLine, _id}});
+    await updateTask({variables: {task: todo.task, deadline: todo.deadLine, id:_id}});
   };
 
   return (
