@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { ADD_TODO, UPDATE_TODO } from "../graphql/Queries";
-const HandleTodo = ({task_, deadLine_, update, _id} : { task_: string, deadLine_: string, update: boolean, _id?: string }) => {
+import { ObjectId } from "mongodb";
+const HandleTodo = ({task_, deadLine_, update, _id} : { task_: string, deadLine_: string, update: boolean, _id?: string | ObjectId }) => {
   const [addTask, { data: addedTask }] = useMutation(ADD_TODO);
   const [updateTask, { data: updatedTask }] = useMutation(UPDATE_TODO);
   console.log(`HandleTodo.tsx -> ${addedTask} ${updatedTask}`);

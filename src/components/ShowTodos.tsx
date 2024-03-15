@@ -1,8 +1,8 @@
-import { useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import { ObjectId } from "mongodb"
 import { useEffect, useState } from "react"
-import { FETCH_TODO } from "../graphql/Queries"
-
+import { DELETE_TODO, FETCH_TODO } from "../graphql/Queries"
+import HandleTodo from "./HandleTodo"
 interface Task {
   task: string,
   deadline: string,
@@ -14,6 +14,8 @@ interface Data {
 
 const ShowTodos = () => {
   const { data } = useQuery<Data>(FETCH_TODO);
+  const [ deleteTask, { data: deletedTask }] = useMutation<Task>(DELETE_TODO);
+  if(deletedTask) location.reload();
   const [ tasks, setTasks ] = useState<Task[]>([]);
   useEffect(() => {
     if(data?.getTasks) setTasks(data.getTasks);
@@ -24,8 +26,8 @@ const ShowTodos = () => {
     // console.log(tasks);
   }, [tasks])
 
-  const editTask = () => {
-    console.log("Edit task in Showtodo.tsx");
+  const deleteT = async(_id:String | ObjectId) => {
+    await deleteTask({variables: {id:_id}});
   }
 
   return (
@@ -41,7 +43,8 @@ const ShowTodos = () => {
             <h3 className="text-black">Dealine:</h3>
             <span className="text-cyan-600">{task.deadline}</span>
             </div>
-            <button className = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={editTask}>Edit</button>
+            <button className = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 m-4 rounded" onClick={(e) => { deleteT(task._id) }}>Delete</button>
+            {/* <button className = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={(e) => { updateT(task._id, task.deadline, task.task) }}>Update</button> */}
           </div>
         )
       })  
